@@ -15,7 +15,7 @@ class ProductTemplate(models.Model):
     @api.model
     def create(self, vals):
         vals.update({
-            'name': self.env['ir.sequence'].next_by_code('product.template')
+            'sequencing': self.env['ir.sequence'].next_by_code('product.template')
         })
         result = super(ProductTemplate, self).create(vals)
         return result
@@ -74,42 +74,3 @@ class ProductTemplate(models.Model):
                 product_template.write(filtered_data)
             else:
                 self.env['product.template'].sudo().create(filtered_data)
-
-# class ResPartners(models.Model):
-#     _inherit = 'res.partner'
-#
-#     def update_partner_data(self):
-#         payload = json.dumps({
-#             "name": "import_data",
-#         })
-#         headers = {
-#             'Content-Type': 'application/json',
-#         }
-#         response = requests.request("POST", "http://137.184.26.89:8069/partner/data", headers=headers, data=payload)
-#         response_data = json.loads(response.text)
-#         for tremos in response_data['result']:
-#             _logger.error(f"Tremos data {tremos}")
-#             filtered_data = {
-#                 'name': tremos['name'],
-#                 # 'company_type': tremos['company_type'],
-#                 'street': tremos['street'],
-#                 'street2': tremos['street2'],
-#                 'city': tremos['city'],
-#                 'vat': tremos['vat'],
-#                 'function': tremos['function'],
-#                 'mobile': tremos['mobile'],
-#                 'phone': tremos['phone'],
-#                 'email': tremos['email'],
-#                 'website': tremos['website'],
-#                 'type': tremos['type'],
-#                 'title': tremos['title'],
-#                 # 'barcode': tremos['barcode'],
-#                 # 'loyalty_points': tremos['loyalty_points']
-#             }
-#             local_data = self.env['res.partner'].sudo().search(
-#                 ['|', '|', '|', ('email', '=', tremos['email']), ('mobile', '=', tremos['mobile']),
-#                  ('phone', '=', tremos['phone']), ('website', '=', tremos['website'])])
-#             if local_data:
-#                 local_data.write(filtered_data)
-#             else:
-#                 self.env['res.partner'].sudo().create(filtered_data)
