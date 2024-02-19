@@ -44,10 +44,19 @@ class AccountMoveLine(models.Model):
     def _onchange_values(self):
         for res in self:
             if res.currency_id != res.company_id.base_currency_id:
-                    res.percentage = ((res.price_unit - res.cost_price_company) / res.cost_price_company) * 100 if res.cost_price_company !=0 else 1
-                    res.cost_price_base = res.currency_id._convert(res.product_id.standard_price, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
-                    res.cost_price_company = res.product_id.standard_price
-                    res.profit_amt_base = res.currency_id._convert((res.price_unit - res.cost_price_company), res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
-                    res.profit_amt_company = res.price_unit - res.cost_price_company
-                    res.price_unit_base = res.currency_id._convert(res.price_unit, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
-                    res.price_unit = res.company_id.base_currency_id._convert(res.price_unit_base, res.currency_id, res.company_id, res.move_id.invoice_date, round=True)
+                if res.cost_price_company != 0:  # Check if cost_price_company is not zero
+                    res.percentage = ((res.price_unit - res.cost_price_company) / res.cost_price_company) * 100
+                else:
+                    # Handle the case where cost_price_company is zero
+                    # For example, set percentage to zero or raise an error
+                    res.percentage = 0  # Set percentage to zero
+                    # Alternatively, raise an error
+                    # raise ValueError("cost_price_company cannot be zero")
+
+                # Other calculations
+                res.cost_price_base = res.currency_id._convert(res.product_id.standard_price, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
+                res.cost_price_company = res.product_id.standard_price
+                res.profit_amt_base = res.currency_id._convert((res.price_unit - res.cost_price_company), res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
+                res.profit_amt_company = res.price_unit - res.cost_price_company
+                res.price_unit_base = res.currency_id._convert(res.price_unit, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
+                res.price_unit = res.company_id.base_currency_id._convert(res.price_unit_base, res.currency_id, res.company_id, res.move_id.invoice_date, round=True)
