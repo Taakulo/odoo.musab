@@ -12,7 +12,7 @@ class AccountMove(models.Model):
     def _compute_active_rate(self):
         for res in self:
             if res.company_id.base_currency_id and res.invoice_date and res.currency_id:
-                if res.currency_id != res.company_id.base_currency_id and :
+                if res.currency_id != res.company_id.base_currency_id and res.invoice_date:
                     tax_data = json.loads(res.tax_totals_json)
                     rate = res.currency_id._get_conversion_rate(res.currency_id, res.company_id.base_currency_id, res.company_id, res.invoice_date)
                     amount=res.currency_id._convert(tax_data.get('amount_total'), res.company_id.base_currency_id, res.company_id, res.invoice_date,round=True)
