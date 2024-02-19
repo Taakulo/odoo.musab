@@ -9,7 +9,7 @@
     'category': 'tool',
     'depends': ['base','purchase','product','sale_management','account'],
     'data': [
-    'views/view.xml'
+    # 'views/view.xml'
     ],
     'demo': [],
     'auto_install': False,

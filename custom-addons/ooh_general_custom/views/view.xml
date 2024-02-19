@@ -5,9 +5,6 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
-                <!-- <xpath expr="//header" position="inside">
-                    <button name="compute_profit" string="Calculate Profit" type="object" class="oe_highlight" />
-                </xpath> -->
                 <xpath expr="//field[@name='note']" position="before">
                     <field name="base_amount" string="Amount Unit(Ksh)"/>
                   </xpath>
