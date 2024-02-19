@@ -5,30 +5,32 @@ import json
 import requests
 from odoo import fields, models,api
 import random
+import string
 
 _logger = logging.getLogger(__name__)
 generated_codes = set()
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
-
-    # @api.model
-    # def create(self, vals):
-    #     result = super(ProductTemplate, self).create(vals)
-    #     code = random.randint(1000, 9999)
-    #     if not result.sequencing and code not in generated_codes:
-    #         result.write({'sequencing': code})
-    #     return result
-    sequencing = fields.Integer(
-        string="Block Seq",
-        readonly=True,
-        related="id"
-    )
-
+    @api.model
+    def create(self, vals):
+        vals.update({
+            'name': self.env['ir.sequence'].next_by_code('product.template')
+        })
+        result = super(ProductTemplate, self).create(vals)
+        return result
+    sequencing=fields.Char(string='Sequencing',readonly=True)
     def update_products_code(self):
-         code = random.randint(1000, 9999)
-         for tremos in self:
-                tremos.write({'sequencing': code})
+        query = """
+            UPDATE product_template
+            SET sequencing = subquery.seq
+            FROM (
+                SELECT id, ROW_NUMBER() OVER () AS seq
+                FROM product_template
+            ) AS subquery
+            WHERE product_template.id = subquery.id;
+            """
+        self.env.cr.execute(query)
     def update_product_data(self):
         payload = json.dumps({
             "name": "import_data",
