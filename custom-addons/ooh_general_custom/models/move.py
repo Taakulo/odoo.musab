@@ -46,7 +46,7 @@ class AccountMoveLine(models.Model):
             if res.currency_id != res.company_id.base_currency_id:
                     res.percentage = ((res.price_unit - res.cost_price_company) / res.cost_price_company) * 100
                     res.cost_price_base = res.currency_id._convert(res.product_id.standard_price, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
-                    res.cost_price_company = res.product_id.standard_price,
+                    res.cost_price_company = res.product_id.standard_price
                     res.profit_amt_base = res.currency_id._convert((res.price_unit - res.cost_price_company), res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
                     res.profit_amt_company = res.price_unit - res.cost_price_company
                     res.price_unit_base = res.currency_id._convert(res.price_unit, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
