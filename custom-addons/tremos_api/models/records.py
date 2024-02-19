@@ -12,17 +12,17 @@ generated_codes = set()
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-    @api.model
-    def create(self, vals):
-        result = super(ProductTemplate, self).create(vals)
-        code = random.randint(1000, 9999)
-        if not result.sequencing and code not in generated_codes:
-            result.write({'sequencing': code})
-        return result
-    sequencing = fields.Char(
+    # @api.model
+    # def create(self, vals):
+    #     result = super(ProductTemplate, self).create(vals)
+    #     code = random.randint(1000, 9999)
+    #     if not result.sequencing and code not in generated_codes:
+    #         result.write({'sequencing': code})
+    #     return result
+    sequencing = fields.Integer(
         string="Block Seq",
         readonly=True,
-        unqueue=True,
+        related="id"
     )
 
     def update_products_code(self):
