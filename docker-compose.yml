@@ -15,7 +15,7 @@ services:
         networks:
                 - tremos-network
    odoo:
-        image: odoo:17.0
+        image: odoo:15.0
         restart: always
         ports:
                 - 8069:8069
