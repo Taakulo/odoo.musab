@@ -12,7 +12,7 @@ class AccountMove(models.Model):
     def _compute_active_rate(self):
         for res in self:
             if res.company_id.base_currency_id and res.invoice_date and res.currency_id:
-                if res.currency_id != res.company_id.base_currency_id:
+                if res.currency_id != res.company_id.base_currency_id and :
                     tax_data = json.loads(res.tax_totals_json)
                     rate = res.currency_id._get_conversion_rate(res.currency_id, res.company_id.base_currency_id, res.company_id, res.invoice_date)
                     amount=res.currency_id._convert(tax_data.get('amount_total'), res.company_id.base_currency_id, res.company_id, res.invoice_date,round=True)
@@ -43,17 +43,11 @@ class AccountMoveLine(models.Model):
     @api.onchange("price_unit", "price_unit_base", "percentage")
     def _onchange_values(self):
         for res in self:
-            if res.currency_id != res.company_id.base_currency_id:
+            if res.currency_id != res.company_id.base_currency_id and res.move_id.invoice_date:
                 if res.cost_price_company != 0:  # Check if cost_price_company is not zero
                     res.percentage = ((res.price_unit - res.cost_price_company) / res.cost_price_company) * 100
                 else:
-                    # Handle the case where cost_price_company is zero
-                    # For example, set percentage to zero or raise an error
                     res.percentage = 0  # Set percentage to zero
-                    # Alternatively, raise an error
-                    # raise ValueError("cost_price_company cannot be zero")
-
-                # Other calculations
                 res.cost_price_base = res.currency_id._convert(res.product_id.standard_price, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
                 res.cost_price_company = res.product_id.standard_price
                 res.profit_amt_base = res.currency_id._convert((res.price_unit - res.cost_price_company), res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
