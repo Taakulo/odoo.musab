@@ -44,7 +44,7 @@ class AccountMoveLine(models.Model):
     def _onchange_values(self):
         for res in self:
             if res.currency_id != res.company_id.base_currency_id:
-                    res.percentage = ((res.price_unit - res.cost_price_company) / res.cost_price_company) * 100
+                    res.percentage = ((res.price_unit - res.cost_price_company) / res.cost_price_company) * 100 if res.cost_price_company !=0 else 1
                     res.cost_price_base = res.currency_id._convert(res.product_id.standard_price, res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
                     res.cost_price_company = res.product_id.standard_price
                     res.profit_amt_base = res.currency_id._convert((res.price_unit - res.cost_price_company), res.company_id.base_currency_id, res.company_id, res.move_id.invoice_date, round=True)
