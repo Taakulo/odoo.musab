@@ -1,0 +1,77 @@
+<odoo>
+    <data>
+        <record id="view_order_line_inherit" model="ir.ui.view">
+            <field name="name">view.sale.order.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <!-- <xpath expr="//header" position="inside">
+                    <button name="compute_profit" string="Calculate Profit" type="object" class="oe_highlight" />
+                </xpath> -->
+                <xpath expr="//field[@name='note']" position="before">
+                    <field name="base_amount" string="Amount Unit(Ksh)"/>
+                  </xpath>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/widget[@name='qty_at_date_widget']" position="after"></xpath>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']/tree[1]/widget[@name='qty_at_date_widget']" position="after">
+                    <field name="percentage" optional="show" />
+                    <field name="cost_price_base" optional="show" string="Cost Price(Ksh)"/>
+                    <field name="cost_price_company" optional="hide"/>
+                    <field name="profit_amt_base" optional="hide" string="Profit Amount(Ksh)"/>
+                    <field name="profit_amt_company" optional="hide"/>
+                    <field name="price_unit_base" optional="show" string="Price Unit(Ksh)"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_company_inherit" model="ir.ui.view">
+            <field name="name">view.res.company.inherit</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                  <xpath expr="//field[@name='favicon']" position="after">
+                    <field name="base_currency_id" />
+                  </xpath>
+            </field>
+        </record>
+
+        <record id="product_inherit_view" model="ir.ui.view">
+            <field name="name">product.template.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//form[1]/sheet[1]" position="before">
+                    <field name="is_less" invisible="1"/>
+                    <field style="color:red;font-size:20px;font-wight:bold;text-align:center;" name="message" attrs="{'invisible': [('is_less', '=',False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='detailed_type']" position="after">
+                    <field name="date"/>
+                    <field name="base_currency_id"/>
+                    <xpath expr="//field[@name='barcode']" position="move"/>
+                    <xpath expr="//field[@name='default_code']" position="move"/>
+                  </xpath>
+                  <xpath expr="//form[@name='Product Template']/sheet[@name='product_form']/notebook[1]/page[@name='general_information']/group[1]/group[@name='group_standard_price']/label[1]" position="before">
+                    <field name="selling_price_base_currency" widget="monetary"
+                    options="{'currency_field': 'base_currency_id'}"/>
+                  </xpath>
+                  <xpath expr="//field[@name='taxes_id']" position="after">
+                    <field name="percentage"/>
+                    <field name="cost_price_base_currency" widget="monetary"
+                    options="{'currency_field': 'base_currency_id'}"/>
+                  </xpath>
+            </field>
+        </record>
+
+        <record id="purchase_inherit_view" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='products']/field[@name='order_line']/tree[1]/button[@name='action_product_forecast_report']" position="after">
+                    <field name="base_cost_price" optional="show" widget="monetary"
+                    options="{'currency_field': 'base_currency_id'}"/>
+                    <field name="percentage" optional="show"/>
+                    <field name="base_currency_id" invisible="1"/>
+                  </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

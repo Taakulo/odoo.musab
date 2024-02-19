@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id='tremos_inherit_product_template_form_view_extend' model='ir.ui.view'>
+        <field name="name">product.product.inherit.form</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <header>
+                <button name="update_product_data" string="UPDATE FUNCTION" class="oe_stat_button" type="object"/>
+            </header>
+        </field>
+    </record>
+
+<!--    <record id='tremos_inherit_res_partner_form_view_extend' model='ir.ui.view'>-->
+<!--        <field name="name">res.partner.inherit.form</field>-->
+<!--        <field name="model">res.partner</field>-->
+<!--        <field name="inherit_id" ref="base.view_partner_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//form" position="inside">-->
+<!--                <button name="update_partner_data" string="UPDATE FUNCTION" class="oe_stat_button" type="object"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- To update products in the database -->
+    <record forcecreate="True" id="cron_available_products_database" model="ir.cron">
+        <field name="name">UPDATE PRODUCTS FROM ONLINE SERVER</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">model.update_product_data()</field>
+        <field name='interval_number'>2</field>
+        <field name='interval_type'>minutes</field>
+        <field name="numbercall">-2</field>
+        <field eval="False" name="doall" />
+        <field name="active">False</field>
+    </record>
+    <!-- To update customers in the database -->
+ <record forcecreate="True" id="cron_update_product_seqeuncing" model="ir.cron">
+            <field name="name">UPDATE PRODUCTS SEQUENCE</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">model.update_products_code()</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-2</field>
+            <field eval="False" name="doall" />
+            <field name="active">False</field>
+        </record>
+
+</odoo>

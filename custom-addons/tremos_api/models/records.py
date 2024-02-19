@@ -1,0 +1,113 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+import logging
+import json
+import requests
+from odoo import fields, models,api
+import random
+
+_logger = logging.getLogger(__name__)
+generated_codes = set()
+
+class ProductTemplate(models.Model):
+    _inherit = 'product.template'
+
+    @api.model
+    def create(self, vals):
+        result = super(ProductTemplate, self).create(vals)
+        code = random.randint(1000, 9999)
+        if not result.sequencing and code not in generated_codes:
+            result.write({'sequencing': code})
+        return result
+    sequencing = fields.Char(
+        string="Block Seq",
+        readonly=True,
+    )
+
+    def update_products_code(self):
+         code = random.randint(1000, 9999)
+         for tremos in self:
+            if not tremos.sequencing and code not in generated_codes:
+                tremos.write({'sequencing': code})
+    def update_product_data(self):
+        payload = json.dumps({
+            "name": "import_data",
+        })
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        response = requests.request("POST", "http://localhost:8069/product/data", headers=headers, data=payload)
+        _logger.error(response.text)
+        response_data = json.loads(response.text)
+        for tremos in response_data['result']:
+            filtered_data = {
+                "name": tremos['name'],
+                "list_price": tremos['list_price'],
+                "standard_price": tremos['standard_price'],
+                "sequencing": tremos['sequencing'],
+                "image_1920": tremos['image'],
+                "detailed_type": tremos['detailed_type'],
+                "percentage": tremos['percentage'],
+            }
+            # Check and create/update UOM
+            unit_of_measure = self.env['uom.uom'].sudo().search([('name', '=', tremos['uom_id'])], limit=1)
+            if not unit_of_measure:
+                unit_of_measure = self.env['uom.uom'].sudo().create({'name': tremos['uom_id']})
+            filtered_data['uom_id'] = unit_of_measure.id
+
+            unit_of_po_measure = self.env['uom.uom'].sudo().search([('name', '=', tremos['uom_po_id'])], limit=1)
+            if not unit_of_po_measure:
+                unit_of_po_measure = self.env['uom.uom'].sudo().create({'name': tremos['uom_po_id']})
+            filtered_data['uom_po_id'] = unit_of_po_measure.id
+
+            # Check and create/update category
+            category_name = self.env['product.category'].sudo().search([('name', '=', tremos['categoryName'])], limit=1)
+            if not category_name:
+                category_name = self.env['product.category'].sudo().create({'name': tremos['categoryName']})
+            filtered_data['categ_id'] = category_name.id
+
+            # Check and create/update product
+            product_template = self.env['product.template'].sudo().search([('sequencing', '=', tremos['sequencing'])])
+            if product_template:
+                product_template.write(filtered_data)
+            else:
+                self.env['product.template'].sudo().create(filtered_data)
+
+# class ResPartners(models.Model):
+#     _inherit = 'res.partner'
+#
+#     def update_partner_data(self):
+#         payload = json.dumps({
+#             "name": "import_data",
+#         })
+#         headers = {
+#             'Content-Type': 'application/json',
+#         }
+#         response = requests.request("POST", "http://137.184.26.89:8069/partner/data", headers=headers, data=payload)
+#         response_data = json.loads(response.text)
+#         for tremos in response_data['result']:
+#             _logger.error(f"Tremos data {tremos}")
+#             filtered_data = {
+#                 'name': tremos['name'],
+#                 # 'company_type': tremos['company_type'],
+#                 'street': tremos['street'],
+#                 'street2': tremos['street2'],
+#                 'city': tremos['city'],
+#                 'vat': tremos['vat'],
+#                 'function': tremos['function'],
+#                 'mobile': tremos['mobile'],
+#                 'phone': tremos['phone'],
+#                 'email': tremos['email'],
+#                 'website': tremos['website'],
+#                 'type': tremos['type'],
+#                 'title': tremos['title'],
+#                 # 'barcode': tremos['barcode'],
+#                 # 'loyalty_points': tremos['loyalty_points']
+#             }
+#             local_data = self.env['res.partner'].sudo().search(
+#                 ['|', '|', '|', ('email', '=', tremos['email']), ('mobile', '=', tremos['mobile']),
+#                  ('phone', '=', tremos['phone']), ('website', '=', tremos['website'])])
+#             if local_data:
+#                 local_data.write(filtered_data)
+#             else:
+#                 self.env['res.partner'].sudo().create(filtered_data)

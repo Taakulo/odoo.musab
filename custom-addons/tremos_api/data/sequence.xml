@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_product_template" model="ir.sequence">
+            <field name="name">Product Sequence</field>
+            <field name="code">product.template</field>
+            <field name="prefix">PRTM/</field>
+            <field name="suffix">/%(y)s</field>
+            <field name="padding">5</field>
+            <field name="implementation">no_gap</field>
+            <field name="company_id" eval="False" />
+        </record>
+    </data>
+</odoo>
