@@ -23,20 +23,20 @@ class AccountMove(models.Model):
                     res.base_amount=res.amount_total_signed
             else:
                 pass
-    current_rate = fields.Float(string='Active Rate', compute='_compute_active_rate', store=True, readonly=True)
-    base_amount = fields.Float(string='Base Amount', compute='_compute_active_rate', store=True, readonly=True,currency_field="company_currency_id")
+    current_rate = fields.Integer(string='Active Rate', compute='_compute_active_rate', store=True, readonly=True)
+    base_amount = fields.Integer(string='Base Amount', compute='_compute_active_rate', store=True, readonly=True,currency_field="company_currency_id")
     company_currency_id=fields.Many2one('res.currency',related="company_id.base_currency_id",readonly=True)
 
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
-    percentage = fields.Float(string="Percentage (%)",store=True,compute="_onchange_values")
-    cost_price_base = fields.Float(string="Base Cost Price",compute="_onchange_values")
-    cost_price_company = fields.Float(string="Company Cost Price", related="product_id.standard_price")
-    profit_amt_base = fields.Float(string="Base Profit Amount", store=True, readonly=True,compute="_onchange_values")
-    profit_amt_company = fields.Float(string="Company Profit Amount", store=True, readonly=True,compute="_onchange_values")
-    price_unit_base = fields.Float(string="Base Price Amount",compute="_onchange_values")
+    percentage = fields.Integer(string="Percentage (%)",store=True,compute="_onchange_values")
+    cost_price_base = fields.Integer(string="Base Cost Price",compute="_onchange_values")
+    cost_price_company = fields.Integer(string="Company Cost Price", related="product_id.standard_price")
+    profit_amt_base = fields.Integer(string="Base Profit Amount", store=True, readonly=True,compute="_onchange_values")
+    profit_amt_company = fields.Integer(string="Company Profit Amount", store=True, readonly=True,compute="_onchange_values")
+    price_unit_base = fields.Integer(string="Base Price Amount",compute="_onchange_values")
 
 
 
