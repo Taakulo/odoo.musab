@@ -22,12 +22,12 @@ class ProductTemplate(models.Model):
     sequencing = fields.Char(
         string="Block Seq",
         readonly=True,
+        unqueue=True,
     )
 
     def update_products_code(self):
          code = random.randint(1000, 9999)
          for tremos in self:
-            if not tremos.sequencing and code not in generated_codes:
                 tremos.write({'sequencing': code})
     def update_product_data(self):
         payload = json.dumps({
@@ -36,7 +36,7 @@ class ProductTemplate(models.Model):
         headers = {
             'Content-Type': 'application/json',
         }
-        response = requests.request("POST", "http://localhost:8069/product/data", headers=headers, data=payload)
+        response = requests.request("POST", "http://164.92.100.42:8069/product/data", headers=headers, data=payload)
         _logger.error(response.text)
         response_data = json.loads(response.text)
         for tremos in response_data['result']:
